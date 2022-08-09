@@ -1,3 +1,5 @@
+import pandas as pd
+
 base_file="1.xlsx"
 compare_file ="2.xlsx"
 sheet_name = "Sheet1"
