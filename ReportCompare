@@ -1,0 +1,36 @@
+base_file="1.xlsx"
+compare_file ="2.xlsx"
+sheet_name = "Sheet1"
+keys = ['Key1','key2']
+skpr=8
+num_row = 20
+
+
+bf = pd.read_excel(base_file, sheet_name, index_col=None, na_values=["NA"],skiprows=skpr,header=1,nrows = num_row)
+cf = pd.read_excel(compare_file, sheet_name, index_col=None, na_values=["NA"],skiprows=skpr,header=1,nrows = num_row)
+res = pd.merge(bf,cf,how="outer",on=keys,indicator = True)
+
+print("Base file is ", base_file)
+print("Compared file is ", compare_file)
+print("Keys: ",keys)
+print() 
+
+
+print("=========Comparing=============")
+for index, row in res[res._merge == 'both'].iterrows() :
+    for column_name in bf.columns.drop(keys):
+        if row[column_name + '_x'] != row[column_name + '_y'] :
+            for key in keys:
+                    print(row[key],' ',end='')
+            print('|',column_name,': ', row[column_name+'_x'], '/', row[column_name+'_y'])
+print()             
+print("Present in base not in comp")            
+for index, row in res[res._merge == 'left_only'].iterrows() :
+    for key in keys:
+                    print(row[key],' ',end='')
+    print()        
+print("Present in comp not in base")            
+for index, row in res[res._merge == 'right_only'].iterrows() :
+    for key in keys:
+                    print(row[key],' ',end='')
+    print()        
